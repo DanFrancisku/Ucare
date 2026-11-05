@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f6f8f">
+<title>Ucare Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f5f7;--card:#fff;--ink:#1f2d36;--muted:#62717b;--line:#e2e7eb;
+  --brand:#2f6f8f;--brand-d:#245770;--soft:#e6f0f5;
+  --ok:#2e8b57;--warn:#d98a1f;--bad:#c94a3c;
+  --alpha:#4f8fc0;--beta:#5fa36a;--gamma:#d08b3c;--theta:#8d6cc0;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+#app{max-width:760px;margin:0 auto;min-height:100vh;padding-bottom:90px}
+.demo-bar{background:#fff3c4;font-size:13px;text-align:center;padding:6px 12px}
+.top{position:sticky;top:0;z-index:20;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:10px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px}
+.brand-mark{width:30px;height:30px;border-radius:9px;background:#fff;color:var(--brand);display:grid;place-items:center;font-weight:800}
+.who{background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:999px;padding:6px 12px;font-size:14px;font-weight:700;cursor:pointer}
+.page{padding:16px}
+h1{font-size:24px;margin:4px 0 4px}
+h2{font-size:18px;margin:22px 0 10px}
+.sub{color:var(--muted);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.row{display:flex;align-items:center;gap:12px}
+.grow{flex:1;min-width:0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;flex:none}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;color:#fff}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--soft);color:var(--brand-d)}
+.pill.bad{background:#fbe3e0;color:var(--bad)}.pill.warn{background:#fdf0dc;color:#9a5e0c}.pill.ok{background:#dff2e7;color:var(--ok)}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;background:var(--brand);color:#fff}
+.btn.full{width:100%}.btn.light{background:var(--soft);color:var(--brand-d)}.btn.red{background:var(--bad)}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.quick button{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 6px;cursor:pointer;font-weight:700;font-size:14px}
+.quick .ic{font-size:26px;display:block;margin-bottom:4px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px}
+.tabs button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font-weight:700;font-size:14px;white-space:nowrap;cursor:pointer}
+.tabs button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.stat b{font-size:28px;display:block;line-height:1.1}
+.note{border-left:5px solid var(--c,var(--brand))}
+.note .meta{font-size:13px;color:var(--muted);margin-bottom:4px}
+.lock{font-size:12px;color:var(--muted)}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.info .card{margin:0}
+.info h4{margin:0 0 4px;font-size:14px;color:var(--brand-d)}
+.info p{margin:0;font-size:14px}
+label{display:block;font-weight:800;font-size:14px;margin:14px 0 6px}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px;background:#fff}
+textarea{min-height:90px;resize:vertical}
+.hint{font-size:13px;color:var(--muted);margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;cursor:pointer;font-weight:700;font-size:14px}
+.chips button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.moods button{font-size:24px;padding:6px 10px}
+.check{display:flex;gap:10px;align-items:center;margin-top:14px;font-weight:700}
+.check input{width:22px;height:22px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:20}
+.nav-in{display:flex;max-width:760px;width:100%}
+.nav button{flex:1;background:none;border:0;padding:9px 2px 10px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer}
+.nav button .ic{display:block;font-size:22px}
+.nav button.on{color:var(--brand)}
+.nav .plus .ic{background:var(--brand);color:#fff;width:44px;height:44px;border-radius:50%;margin:-18px auto 2px;display:grid;place-items:center;box-shadow:0 4px 10px rgba(0,0,0,.18)}
+.sheet-bg{position:fixed;inset:0;background:rgba(20,30,40,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:760px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px 16px 30px}
+.sheet-head{display:flex;justify-content:space-between;align-items:center}
+.x{background:var(--card);border:1px solid var(--line);border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;z-index:60;font-size:14px}
+.login{padding:28px 16px}
+.login .logo{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.login .logo .brand-mark{width:52px;height:52px;font-size:28px;border-radius:14px;background:var(--brand);color:#fff}
+.login .logo span{font-size:34px;font-weight:800;color:var(--brand-d)}
+.role{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer}
+.role .ic{font-size:30px}
+.bar{height:12px;border-radius:6px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left}
+.back{background:none;border:0;color:var(--brand-d);font-weight:800;cursor:pointer;padding:0;margin-bottom:6px}
+.empty{text-align:center;color:var(--muted);padding:24px 10px}
+.me{background:var(--soft)}
+.where{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.where button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 6px;font-weight:700;cursor:pointer;font-size:14px}
+.where button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.flat{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.flat:last-child{border-bottom:0}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ============ UCARE DEMO v2 – all data is fake ============ */
+const UNITS=[
+  {id:'alpha',name:'Alpha',color:'var(--alpha)'},
+  {id:'beta',name:'Beta',color:'var(--beta)'},
+  {id:'gamma',name:'Gamma',color:'var(--gamma)'},
+  {id:'theta',name:'Theta',color:'var(--theta)'}];
+const U=id=>UNITS.find(u=>u.id===id);
+const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+/* Each person has their own flat. ratio = support workers per shift (day/evening). dc = day centre days */
+const CLIENTS=[
+ {id:'c0',name:'James Miller',age:28,unit:'alpha',flat:'Flat A1',ratio:2,dc:['Mon','Tue','Wed','Thu','Fri'],comm:'Few words. Uses pictures and a "now and next" board.',likes:'Music, bus rides, swimming',triggers:'Loud places, waiting, changes to routine',calm:'Now/next board, music on headphones, space'},
+ {id:'c1',name:'Leo Hart',age:24,unit:'alpha',flat:'Flat A2',ratio:1,dc:['Mon','Wed','Fri'],comm:'Short sentences. Uses a picture board when upset.',likes:'Trains, music, walks in the park',triggers:'Loud noise, changes without warning',calm:'Headphones, quiet room, countdown before changes'},
+ {id:'c2',name:'Maya Singh',age:31,unit:'alpha',flat:'Flat A3',ratio:1,dc:[],comm:'Verbal. Likes clear yes/no questions.',likes:'Drawing, baking, nature videos',triggers:'Crowds, being rushed',calm:'Drawing time, 1:1 chat, weighted blanket'},
+ {id:'c3',name:'Tom Reeves',age:19,unit:'alpha',flat:'Flat A4',ratio:2,dc:['Tue','Thu'],comm:'Uses Makaton signs and some words.',likes:'Swimming, Lego, buses',triggers:'Bright lights, waiting',calm:'Visual timer, sensory toys'},
+ {id:'c4',name:'Aisha Bello',age:27,unit:'beta',flat:'Flat B1',ratio:1,dc:['Mon','Wed'],comm:'Verbal. Needs extra time to answer.',likes:'Cooking, Afrobeat music, puzzles',triggers:'Unknown staff, strong smells',calm:'Familiar staff, music, routine chart'},
+ {id:'c5',name:'Daniel Kim',age:22,unit:'beta',flat:'Flat B2',ratio:1,dc:['Mon','Tue','Wed','Thu'],comm:'Uses a tablet app to talk.',likes:'Computers, maps, space',triggers:'Tablet battery low, loud TV',calm:'Charge tablet, space videos'},
+ {id:'c6',name:'Grace Owen',age:35,unit:'beta',flat:'Flat B3',ratio:1,dc:[],comm:'Verbal. Likes written lists.',likes:'Gardening, knitting, tea',triggers:'Plans changing, phone ringing',calm:'Written plan for the day, garden time'},
+ {id:'c7',name:'Ryan Cole',age:29,unit:'gamma',flat:'Flat G1',ratio:2,dc:[],comm:'Few words. Uses gestures and pictures.',likes:'Car rides, water play, football',triggers:'Being touched without asking',calm:'Car ride, space, deep pressure (with consent)'},
+ {id:'c8',name:'Zara Ali',age:20,unit:'gamma',flat:'Flat G2',ratio:1,dc:['Tue','Wed','Thu'],comm:'Verbal. Repeats words when anxious.',likes:'Dancing, cartoons, colouring',triggers:'Loud voices, hunger',calm:'Snack, dance music, calm voice'},
+ {id:'c9',name:'Noah Price',age:33,unit:'gamma',flat:'Flat G3',ratio:1,dc:['Fri'],comm:'Verbal. Very literal – say exactly what you mean.',likes:'Train timetables, chess',triggers:'Jokes he does not understand, late plans',calm:'Clear explanation, chess game'},
+ {id:'c10',name:'Ella Ward',age:26,unit:'theta',flat:'Flat T1',ratio:2,dc:['Mon','Fri'],comm:'Uses PECS cards.',likes:'Animals, bubbles, sensory lights',triggers:'Busy rooms, cold showers',calm:'Sensory room, bubbles'},
+ {id:'c11',name:'Sami Haddad',age:30,unit:'theta',flat:'Flat T2',ratio:1,dc:[],comm:'Verbal. Speaks English and Arabic.',likes:'Cooking, football, cafe trips',triggers:'Missing prayer time, noise at night',calm:'Keep routine, quiet evening'},
+ {id:'c12',name:'Ben Fox',age:23,unit:'theta',flat:'Flat T3',ratio:1,dc:['Wed'],comm:'Verbal. Likes to be independent.',likes:'Gaming, shopping, cycling',triggers:'Staff entering without knocking',calm:'Knock and wait, give choices'}];
+const C=id=>CLIENTS.find(c=>c.id===id);
+const DC_TIME='10:00–14:00';
+const goesDC=(c,t=Date.now())=>c.dc.includes(WD[new Date(t).getDay()]);
+
+/* 40 fake staff names */
+const FIRST=['Priya','Josh','Amara','Kofi','Lucy','Mark','Nina','Tariq','Emma','Ola','Chris','Fatima','Dan','Sofia','Ravi','Grace','Tunde','Mia','Omar','Hannah'];
+const LAST=['Das','Lee','Okafor','Mensah','Grant','Hill','Rossi','Shah','Wood','Adeyemi','Bell','Khan'];
+const STAFF=[...Array(40)].map((_,i)=>FIRST[i%20]+' '+LAST[(i+Math.floor(i/20)*5)%12]);
+
+const USERS={
+ staff:{role:'staff',name:'Sam Carter',title:'Support Worker',unit:'alpha',ic:'🧑‍⚕️',desc:'Your flat, care notes, incidents, handover'},
+ manager:{role:'manager',name:'Helen Brooks',title:'Home Manager',ic:'👩‍💼',desc:'Who is where now, incidents, rota'},
+ director:{role:'director',name:'David Shaw',title:'Director',ic:'📊',desc:'See the whole company at a glance'},
+ family:{role:'family',name:'Karen Hart',title:"Leo's mum",client:'c1',ic:'👪',desc:'See shared updates about your loved one'}};
+
+const CATS=['Personal care','Food & drink','Activity','Day centre','Mood','Sleep','Health','Other'];
+const MOODS=['😄','🙂','😐','😟','😠'];
+const LEVELS=['Low','Medium','High'];
+const WHERE=[['flat','🏠 In flat'],['dc','🏢 At day centre'],['out','🚶 Out (activity)'],['appt','🏥 Appointment']];
+const whereLabel=k=>(WHERE.find(w=>w[0]===k)||WHERE[0])[1];
+
+/* ---------- time helpers ---------- */
+const NOW=Date.now(), H=3600000, D=86400000;
+const pad=n=>String(n).padStart(2,'0');
+const fmtT=t=>{const d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes())};
+const isToday=t=>new Date(t).toDateString()===new Date().toDateString();
+const fmtDay=t=>isToday(t)?'Today':new Date(t).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const initials=n=>n.split(' ').map(x=>x[0]).join('').slice(0,2);
+
+/* ---------- shifts & rota ---------- */
+const SHIFTS=[{id:0,name:'Day',time:'09:15–15:15'},{id:1,name:'Evening',time:'15:00–22:00'},{id:2,name:'Night',time:'21:45–09:30'}];
+function currentShift(){const d=new Date(),m=d.getHours()*60+d.getMinutes();return m>=555&&m<900?0:m>=900&&m<1305?1:2}
+/* rota(day,shift) -> {clientId:[staff names]}. Night = 1 waking staff per flat. */
+function rota(day,shift){
+  const out={}; let p=((day*3+shift)*17)%STAFF.length;
+  CLIENTS.forEach(c=>{
+    const n=shift===2?1:c.ratio; out[c.id]=[];
+    for(let k=0;k<n;k++){out[c.id].push(STAFF[p%STAFF.length]);p++}
+  });
+  if(day===0&&shift===0)out.c0[0]='Sam Carter'; // demo user works with James today
+  return out;
+}
+const myShift=()=>{for(const s of SHIFTS){const r=rota(0,s.id);for(const c of CLIENTS)if(r[c.id].includes(S.user.name))return{shift:s,client:c,with:r[c.id].filter(n=>n!==S.user.name)}}return null};
+
+/* ---------- seed data ---------- */
+function seed(){
+  const notes=[],incidents=[],handovers=[],status={};
+  const sample=[
+   ['Personal care','🙂','Had a shower and chose own clothes. Needed one prompt for teeth.',true],
+   ['Food & drink','😄','Ate all breakfast (porridge and banana). Drank 2 cups of water.',true],
+   ['Activity','😄','Went for a walk in the park for 40 minutes. Enjoyed it.',true],
+   ['Mood','😐','A bit quiet after lunch. Spent time in own room, then came to the lounge.',false],
+   ['Sleep','🙂','Slept well. Woke up once at 3am, settled quickly.',false]];
+  CLIENTS.forEach((c,i)=>{
+    const n=2+(i%3);
+    for(let k=0;k<n;k++){
+      const s=sample[(i+k)%sample.length];
+      notes.push({id:uid(),client:c.id,staff:STAFF[(i+k)%STAFF.length],cat:s[0],mood:s[1],text:s[2],family:s[3],time:NOW-(k*2+1)*H-(i*7)*60000});
+    }
+    notes.push({id:uid(),client:c.id,staff:STAFF[(i+3)%STAFF.length],cat:'Activity',mood:'🙂',text:'Did an activity they enjoy with staff. Good engagement.',family:true,time:NOW-D-(i*13)*60000});
+    const h=new Date().getHours();
+    status[c.id]={where:goesDC(c)&&h>=10&&h<14?'dc':'flat',time:NOW-40*60000,by:'System (demo)'};
+    handovers.push({id:uid(),client:c.id,staff:STAFF[(i+20)%STAFF.length],time:NOW-3*H,shift:'Night → Day',
+      text:['Quiet night. Slept well. Morning meds given as planned.','Woke at 4am, had a drink, back to sleep by 5am. Needs milk and bread.','Settled night. Laundry in the machine – please dry. GP appointment Thursday.'][i%3]});
+  });
+  incidents.push({id:uid(),client:'c7',staff:STAFF[3],time:NOW-3*H,level:'Medium',
+    a:'A neighbour knocked loudly on the flat door.',b:'Ryan shouted and hit the wall with his hand. About 2 minutes.',c:'Staff gave space, played his music. Calm after 10 minutes. No injury.',reviewed:false});
+  incidents.push({id:uid(),client:'c8',staff:STAFF[4],time:NOW-6*H,level:'Low',
+    a:'Day centre bus was 30 minutes late.',b:'Zara repeated "bus now" loudly and cried.',c:'Staff showed the bus time on her visual clock and gave a snack. Settled.',reviewed:false});
+  incidents.push({id:uid(),client:'c1',staff:'Sam Carter',time:NOW-D-2*H,level:'Low',
+    a:'Fire alarm test without warning.',b:'Leo covered ears and ran to his bedroom.',c:'Gave headphones and stayed nearby. Settled in 5 minutes.',reviewed:true,reviewer:'Helen Brooks',reviewNote:'Add fire alarm test dates to Leo\'s weekly picture plan.'});
+  return {v:2,notes,incidents,handovers,status};
+}
+
+/* ---------- store (saved in this browser only) ---------- */
+const KEY='ucare-demo-v2';
+let DB;
+try{DB=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!DB||DB.v!==2)DB=seed();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}};
+
+/* ---------- app state ---------- */
+let S={user:null,view:'home',unit:'all',client:null,tab:'notes',day:0,shift:0,incFilter:'open',sheet:null,form:{}};
+const app=document.getElementById('app');
+function go(view,extra={}){Object.assign(S,{view},extra);render();window.scrollTo(0,0)}
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
+
+/* ---------- small UI parts ---------- */
+const unitTag=u=>`<span class="tag" style="background:${U(u).color}">${U(u).name}</span>`;
+const avatar=c=>`<div class="av" style="background:${U(c.unit).color}">${initials(c.name)}</div>`;
+const ratioPill=c=>`<span class="pill">${c.ratio}:1</span>`;
+function wherePill(c){const s=DB.status[c.id];const cls=s.where==='flat'?'ok':s.where==='appt'?'warn':'';return `<span class="pill ${cls}">${whereLabel(s.where)}</span>`}
+function whereButtons(c){
+  const s=DB.status[c.id];
+  return `<div class="where">${WHERE.map(([k,l])=>`<button class="${s.where===k?'on':''}" onclick="setWhere('${c.id}','${k}')">${l}</button>`).join('')}</div>
+  <div class="small muted" style="margin-top:6px">Updated ${fmtT(s.time)} by ${esc(s.by)}</div>`;
+}
+function setWhere(cid,k){DB.status[cid]={where:k,time:Date.now(),by:S.user.name};save();render();toast(C(cid).name.split(' ')[0]+': '+whereLabel(k))}
+function noteCard(n,showClient=true){
+  const c=C(n.client);
+  return `<div class="card note" style="--c:${U(c.unit).color}">
+    <div class="meta">${showClient?`<b style="color:var(--ink)">${esc(c.name)}</b> · `:''}${fmtDay(n.time)} ${fmtT(n.time)} · ${esc(n.cat)} ${n.mood}</div>
+    <div>${esc(n.text)}</div>
+    <div class="lock">✍️ ${esc(n.staff)} · 🔒 Locked record${n.family?' · 👪 Shared with family':''}</div>
+  </div>`;
+}
+function incCard(i){
+  const c=C(i.client), cls=i.level==='High'?'bad':i.level==='Medium'?'warn':'ok';
+  const canReview=S.user.role==='manager'&&!i.reviewed;
+  return `<div class="card note" style="--c:var(--bad)">
+    <div class="row"><div class="grow"><b>${esc(c.name)}</b> ${unitTag(c.unit)}<div class="small muted">${esc(c.flat)} · ${fmtDay(i.time)} ${fmtT(i.time)} · by ${esc(i.staff)}</div></div>
+    <span class="pill ${cls}">${i.level}</span></div>
+    <p class="small" style="margin:8px 0 2px"><b>A – Before:</b> ${esc(i.a)}</p>
+    <p class="small" style="margin:2px 0"><b>B – Behaviour:</b> ${esc(i.b)}</p>
+    <p class="small" style="margin:2px 0 8px"><b>C – After:</b> ${esc(i.c)}</p>
+    ${i.reviewed?`<div class="pill ok">✓ Reviewed by ${esc(i.reviewer)}</div>${i.reviewNote?`<p class="small muted" style="margin:6px 0 0">Action: ${esc(i.reviewNote)}</p>`:''}`
+      :`<div class="pill warn">Waiting for manager review</div>`}
+    ${canReview?`<button class="btn full" style="margin-top:10px" onclick="openSheet('review','${i.id}')">Review incident</button>`:''}
+  </div>`;
+}
+function unitTabs(withAll=true){
+  return `<div class="tabs">${withAll?`<button class="${S.unit==='all'?'on':''}" onclick="go(S.view,{unit:'all'})">All units</button>`:''}
+  ${UNITS.map(u=>`<button class="${S.unit===u.id?'on':''}" onclick="go(S.view,{unit:'${u.id}'})">${u.name}</button>`).join('')}</div>`;
+}
+
+/* ---------- views ---------- */
+function vLogin(){
+  return `<div class="demo-bar">Demo only – all names and records are made up.</div>
+  <div class="login">
+    <div class="logo"><div class="brand-mark">U</div><span>Ucare</span></div>
+    <p class="sub">Simple, safe care records for supported living and care homes.</p>
+    <h2>Choose a demo user</h2>
+    ${Object.entries(USERS).map(([k,u])=>`
+      <button class="role" onclick="login('${k}')"><span class="ic">${u.ic}</span>
+        <span class="grow"><b>${u.title}</b> – ${esc(u.name)}<br><span class="small muted">${u.desc}</span></span><span>›</span></button>`).join('')}
+    <p class="small muted" style="margin-top:20px">Company in demo: <b>Persons Care</b> · 4 units · each person has their own flat</p>
+  </div>`;
+}
+
+function vStaffHome(){
+  const u=S.user, ms=myShift();
+  if(!ms)return `<div class="page"><h1>Hello 👋</h1><div class="empty">You are not on the rota today.</div></div>`;
+  const c=ms.client, unit=U(c.unit);
+  const notes=DB.notes.filter(n=>n.client===c.id&&isToday(n.time)).sort((a,b)=>b.time-a.time);
+  const ho=DB.handovers.filter(h=>h.client===c.id).sort((a,b)=>b.time-a.time)[0];
+  return `<div class="page">
+    <h1>Hello, ${esc(u.name.split(' ')[0])} 👋</h1>
+    <p class="sub">${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}</p>
+    <div class="card" style="background:${unit.color};color:#fff;border:0">
+      <div class="small" style="opacity:.9">Your shift today · ${ms.shift.name} ${ms.shift.time}</div>
+      <div style="font-size:20px;font-weight:800">${esc(c.name)} · ${esc(c.flat)}</div>
+      <div class="small" style="opacity:.9">${unit.name} unit · ${c.ratio}:1 support${ms.with.length?' · with '+ms.with.map(esc).join(', '):' · you are the only worker'}</div>
+    </div>
+    ${goesDC(c)?`<div class="card" style="background:var(--soft);border-color:#c9dfe9">🏢 <b>Day centre today</b> ${DC_TIME}<div class="small muted">Take ${esc(c.name.split(' ')[0])} to day centre and collect at the end.</div></div>`
+      :`<div class="card">🏠 <b>No day centre today</b><div class="small muted">${esc(c.name.split(' ')[0])} stays in the flat. Plan activities together.</div></div>`}
+    <h2>Where is ${esc(c.name.split(' ')[0])} now?</h2>
+    ${whereButtons(c)}
+    <h2>Quick actions</h2>
+    <div class="quick">
+      <button onclick="openSheet('note','${c.id}')"><span class="ic">📝</span>Care note</button>
+      <button onclick="openSheet('incident','${c.id}')"><span class="ic">⚠️</span>Incident</button>
+      <button onclick="openSheet('handover','${c.id}')"><span class="ic">🔄</span>Handover</button>
+    </div>
+    <h2>Last handover for ${esc(c.flat)}</h2>
+    ${ho?`<div class="card"><div class="small muted">${fmtDay(ho.time)} ${fmtT(ho.time)} · ${esc(ho.shift)} · ${esc(ho.staff)}</div>${esc(ho.text)}</div>`:'<div class="empty">No handover yet.</div>'}
+    <h2>Today's notes for ${esc(c.name.split(' ')[0])}</h2>
+    ${notes.length?notes.map(n=>noteCard(n,false)).join(''):'<div class="card" style="background:#fdf0dc;border-color:#f0d3a6">⏰ No note yet today. Please add one.</div>'}
+    <button class="btn light full" onclick="go('client',{client:'${c.id}',tab:'notes'})">Open ${esc(c.name.split(' ')[0])}'s profile</button>
+  </div>`;
+}
+
+function vClients(){
+  let list=CLIENTS.filter(c=>S.unit==='all'||c.unit===S.unit);
+  const q=(S.q||'').toLowerCase();
+  if(q)list=list.filter(c=>c.name.toLowerCase().includes(q));
+  return `<div class="page"><h1>People we support</h1>
+    <p class="sub">${CLIENTS.length} people in demo · each has their own flat</p>
+    <input placeholder="🔍 Search name" value="${esc(S.q||'')}" oninput="S.q=this.value;renderKeep(this)" style="margin-bottom:12px">
+    ${unitTabs()}
+    ${list.map(c=>{
+      const today=DB.notes.filter(n=>n.client===c.id&&isToday(n.time)).length;
+      const inc=DB.incidents.some(i=>i.client===c.id&&isToday(i.time));
+      return `<div class="card row" style="cursor:pointer" onclick="go('client',{client:'${c.id}',tab:'notes'})">
+        ${avatar(c)}<div class="grow"><b>${esc(c.name)}</b> ${ratioPill(c)}<div class="small muted">${esc(c.flat)} · ${U(c.unit).name} · ${today} note${today===1?'':'s'} today</div>
+        <div style="margin-top:4px">${wherePill(c)} ${inc?'<span class="pill bad">Incident today</span>':''}</div></div><span class="muted">›</span></div>`}).join('')||'<div class="empty">No one found.</div>'}
+  </div>`;
+}
+
+function vClient(){
+  const c=C(S.client), role=S.user.role;
+  const notes=DB.notes.filter(n=>n.client===c.id).sort((a,b)=>b.time-a.time);
+  const incs=DB.incidents.filter(i=>i.client===c.id).sort((a,b)=>b.time-a.time);
+  const hos=DB.handovers.filter(h=>h.client===c.id).sort((a,b)=>b.time-a.time);
+  const now=rota(0,currentShift())[c.id];
+  const canWrite=role==='staff'||role==='manager';
+  return `<div class="page">
+    <button class="back" onclick="go(S.user.role==='staff'?'home':'clients')">‹ Back</button>
+    <div class="row" style="margin-bottom:12px">${avatar(c)}<div class="grow"><h1 style="margin:0">${esc(c.name)}</h1>
+      <div class="small muted">Age ${c.age} · ${esc(c.flat)} · ${unitTag(c.unit)} ${ratioPill(c)}</div></div></div>
+    <div class="card"><div class="row"><div class="grow"><b>On shift now (${SHIFTS[currentShift()].name})</b><div class="small">${now.map(esc).join(', ')}</div></div>${wherePill(c)}</div>
+      <div class="small muted" style="margin-top:6px">🏢 Day centre: ${c.dc.length?c.dc.join(', ')+' · '+DC_TIME:'No – stays in flat'}</div></div>
+    ${canWrite?`<h2>Where is ${esc(c.name.split(' ')[0])} now?</h2>${whereButtons(c)}`:''}
+    <h2>About ${esc(c.name.split(' ')[0])}</h2>
+    <div class="info">
+      <div class="card"><h4>💬 Communication</h4><p>${esc(c.comm)}</p></div>
+      <div class="card"><h4>⭐ Likes</h4><p>${esc(c.likes)}</p></div>
+      <div class="card"><h4>⚡ Triggers</h4><p>${esc(c.triggers)}</p></div>
+      <div class="card"><h4>🌿 What helps</h4><p>${esc(c.calm)}</p></div>
+    </div>
+    ${canWrite?`<div class="quick" style="margin-top:12px">
+      <button onclick="openSheet('note','${c.id}')"><span class="ic">📝</span>Care note</button>
+      <button onclick="openSheet('incident','${c.id}')"><span class="ic">⚠️</span>Incident</button>
+      <button onclick="openSheet('handover','${c.id}')"><span class="ic">🔄</span>Handover</button></div>`:''}
+    <div class="tabs" style="margin-top:16px">
+      <button class="${S.tab==='notes'?'on':''}" onclick="go('client',{tab:'notes'})">Notes (${notes.length})</button>
+      <button class="${S.tab==='inc'?'on':''}" onclick="go('client',{tab:'inc'})">Incidents (${incs.length})</button>
+      <button class="${S.tab==='ho'?'on':''}" onclick="go('client',{tab:'ho'})">Handovers (${hos.length})</button>
+    </div>
+    ${S.tab==='notes'?(notes.map(n=>noteCard(n,false)).join('')||'<div class="empty">No notes yet.</div>')
+     :S.tab==='inc'?(incs.map(incCard).join('')||'<div class="empty">No incidents. 🎉</div>')
+     :(hos.map(h=>`<div class="card"><div class="meta small muted">${fmtDay(h.time)} ${fmtT(h.time)} · ${esc(h.shift)} · ${esc(h.staff)}</div>${esc(h.text)}</div>`).join('')||'<div class="empty">No handovers yet.</div>')}
+  </div>`;
+}
+
+function vRota(){
+  if(S.unit==='all')S.unit=S.user.unit||'alpha';
+  const days=[...Array(7)].map((_,i)=>NOW+i*D);
+  const r=rota(S.day,S.shift), sh=SHIFTS[S.shift];
+  const list=CLIENTS.filter(c=>c.unit===S.unit);
+  const total=list.reduce((a,c)=>a+r[c.id].length,0);
+  return `<div class="page"><h1>Rota</h1><p class="sub">Who works in which flat, by shift.</p>
+    ${unitTabs(false)}
+    <div class="tabs">${days.map((d,i)=>`<button class="${S.day===i?'on':''}" onclick="go('rota',{day:${i}})">${i===0?'Today':new Date(d).toLocaleDateString('en-GB',{weekday:'short',day:'numeric'})}</button>`).join('')}</div>
+    <div class="tabs">${SHIFTS.map(s=>`<button class="${S.shift===s.id?'on':''}" onclick="go('rota',{shift:${s.id}})">${s.name} ${s.time}</button>`).join('')}</div>
+    <div class="card">
+      <div class="small muted" style="margin-bottom:4px">${U(S.unit).name} · ${sh.name} ${sh.time} · ${total} staff</div>
+      ${list.map(c=>{const me=r[c.id].includes(S.user.name);
+        return `<div class="flat ${me?'me':''}">${avatar(c)}<div class="grow"><b>${esc(c.flat)}</b> – ${esc(c.name)} ${ratioPill(c)}
+        <div>${r[c.id].map(n=>n===S.user.name?`<b>${esc(n)} (you)</b>`:esc(n)).join(' · ')}</div>
+        ${S.shift===0&&goesDC(c,days[S.day])?`<div class="small muted">🏢 Day centre ${DC_TIME}</div>`:''}</div></div>`}).join('')}
+    </div>
+    <p class="small muted">Night shift: 1 waking staff per flat. Demo rota – in the real app managers build and change it here.</p>
+  </div>`;
+}
+
+function vManagerHome(){
+  const open=DB.incidents.filter(i=>!i.reviewed);
+  const todayNotes=DB.notes.filter(n=>isToday(n.time));
+  const missing=CLIENTS.filter(c=>!todayNotes.some(n=>n.client===c.id));
+  const cs=currentShift(), r=rota(0,cs);
+  const onShift=Object.values(r).reduce((a,x)=>a+x.length,0);
+  const atDC=CLIENTS.filter(c=>DB.status[c.id].where==='dc').length;
+  return `<div class="page"><h1>Good day, Helen 👋</h1><p class="sub">Right now: ${SHIFTS[cs].name} shift ${SHIFTS[cs].time}</p>
+    <div class="stats">
+      <div class="stat"><b>${onShift}</b><span class="small muted">Staff on shift now</span></div>
+      <div class="stat"><b style="color:${open.length?'var(--bad)':'var(--ok)'}">${open.length}</b><span class="small muted">Incidents to review</span></div>
+      <div class="stat"><b>${CLIENTS.length-missing.length}/${CLIENTS.length}</b><span class="small muted">People with a note today</span></div>
+      <div class="stat"><b>${atDC}</b><span class="small muted">At day centre now</span></div>
+    </div>
+    ${missing.length?`<div class="card" style="margin-top:10px;background:#fdf0dc;border-color:#f0d3a6"><b>⏰ No note yet today:</b> ${missing.map(c=>esc(c.name)).join(', ')}</div>`:''}
+    <h2>Who is where now</h2>
+    ${unitTabs()}
+    ${UNITS.filter(u=>S.unit==='all'||S.unit===u.id).map(u=>`<div class="card"><div style="margin-bottom:4px">${unitTag(u.id)}</div>
+      ${CLIENTS.filter(c=>c.unit===u.id).map(c=>`<div class="flat" style="cursor:pointer" onclick="go('client',{client:'${c.id}',tab:'notes'})">
+        <div class="grow"><b>${esc(c.flat)}</b> – ${esc(c.name)} ${ratioPill(c)}<div class="small muted">Staff: ${r[c.id].map(esc).join(', ')}</div></div>${wherePill(c)}</div>`).join('')}</div>`).join('')}
+    <h2>Needs your review</h2>
+    ${open.map(incCard).join('')||'<div class="empty">All incidents reviewed. ✓</div>'}
+  </div>`;
+}
+
+function vIncidents(){
+  let list=DB.incidents.filter(i=>S.incFilter==='open'?!i.reviewed:i.reviewed).sort((a,b)=>b.time-a.time);
+  return `<div class="page"><h1>Incidents</h1><p class="sub">ABC records: what happened before, the behaviour, and after.</p>
+    <div class="tabs"><button class="${S.incFilter==='open'?'on':''}" onclick="go('incidents',{incFilter:'open'})">To review</button>
+    <button class="${S.incFilter==='done'?'on':''}" onclick="go('incidents',{incFilter:'done'})">Reviewed</button></div>
+    ${list.map(incCard).join('')||'<div class="empty">Nothing here.</div>'}</div>`;
+}
+
+function vDirector(){
+  const tn=DB.notes.filter(n=>isToday(n.time)), week=DB.incidents.filter(i=>i.time>NOW-7*D);
+  const max=Math.max(1,...UNITS.map(u=>tn.filter(n=>C(n.client).unit===u.id).length));
+  const covered=CLIENTS.filter(c=>tn.some(n=>n.client===c.id)).length;
+  const onShift=Object.values(rota(0,currentShift())).reduce((a,x)=>a+x.length,0);
+  return `<div class="page"><h1>Company overview</h1><p class="sub">Persons Care · all units</p>
+    <div class="stats">
+      <div class="stat"><b>${CLIENTS.length}</b><span class="small muted">People / flats (demo)</span></div>
+      <div class="stat"><b>${onShift}</b><span class="small muted">Staff on shift now</span></div>
+      <div class="stat"><b>${Math.round(covered/CLIENTS.length*100)}%</b><span class="small muted">Daily note coverage</span></div>
+      <div class="stat"><b>${week.length}</b><span class="small muted">Incidents this week</span></div>
+    </div>
+    <h2>Care notes today by unit</h2>
+    <div class="card">${UNITS.map(u=>{const n=tn.filter(x=>C(x.client).unit===u.id).length;
+      return `<div style="margin:8px 0"><div class="row small"><b class="grow">${u.name}</b>${n}</div><div class="bar"><i style="width:${n/max*100}%;background:${u.color}"></i></div></div>`}).join('')}</div>
+    <h2>Incidents this week</h2>
+    <div class="card"><table><tr><th>Unit</th><th>Low</th><th>Med</th><th>High</th><th>Reviewed</th></tr>
+    ${UNITS.map(u=>{const l=week.filter(i=>C(i.client).unit===u.id);const c=v=>l.filter(i=>i.level===v).length;
+      return `<tr><td>${unitTag(u.id)}</td><td>${c('Low')}</td><td>${c('Medium')}</td><td>${c('High')}</td><td>${l.filter(i=>i.reviewed).length}/${l.length}</td></tr>`}).join('')}</table></div>
+    <p class="small muted">Directors see summaries and cannot change records. In the real app: CQC reports and staff training status.</p>
+  </div>`;
+}
+
+function vFamily(){
+  const c=C(S.user.client);
+  const notes=DB.notes.filter(n=>n.client===c.id&&n.family).sort((a,b)=>b.time-a.time);
+  return `<div class="page"><h1>Hello, Karen 👋</h1><p class="sub">Updates about ${esc(c.name.split(' ')[0])}, shared by the team.</p>
+    <div class="card row">${avatar(c)}<div class="grow"><b>${esc(c.name)}</b><div class="small muted">${esc(c.flat)} · ${U(c.unit).name} unit · Persons Care</div></div></div>
+    <h2>Shared updates</h2>
+    ${notes.map(n=>`<div class="card note" style="--c:${U(c.unit).color}"><div class="meta">${fmtDay(n.time)} ${fmtT(n.time)} · ${esc(n.cat)} ${n.mood}</div>${esc(n.text)}</div>`).join('')||'<div class="empty">No updates yet.</div>'}
+    <button class="btn light full" onclick="toast('Messaging comes in the next version')">💬 Message the team</button>
+    <p class="small muted" style="margin-top:12px">Families only see notes that staff choose to share.</p>
+  </div>`;
+}
+
+function vMore(){
+  return `<div class="page"><h1>More</h1>
+    <div class="card"><b>${esc(S.user.name)}</b><div class="small muted">${S.user.title}</div></div>
+    <button class="btn light full" style="margin-bottom:10px" onclick="logout()">↩ Switch demo user</button>
+    <button class="btn light full" style="margin-bottom:10px" onclick="resetDemo()">♻ Reset demo data</button>
+    <h2>Coming in later versions</h2>
+    <div class="card small">💊 Medication records (MAR)<br>⏱ Clock in / out<br>🎓 Staff training tracker<br>💬 Family messages<br>📄 CQC reports & PDF export<br>🔔 Notifications</div>
+    <h2>Safety (real app)</h2>
+    <div class="card small">🔒 Records cannot be deleted, only corrected<br>👀 Every change is logged (who and when)<br>🇬🇧 Data stored on UK servers<br>🔑 Each role sees only what it needs</div>
+  </div>`;
+}
+
+/* ---------- sheets (forms) ---------- */
+function openSheet(type,ref){
+  S.sheet={type,ref};
+  const def=S.user.role==='staff'&&myShift()?myShift().client.id:CLIENTS[0].id;
+  S.form={client:type==='review'?null:(ref||def),cat:'Personal care',mood:'🙂',level:'Low',family:false,shift:['Day → Evening','Evening → Night','Night → Day'][currentShift()]};
+  render();
+}
+function closeSheet(){S.sheet=null;render()}
+function clientSelect(){
+  const opts=S.user.role==='staff'?CLIENTS.filter(c=>c.unit===S.user.unit):CLIENTS;
+  return `<label>Person / flat</label><select onchange="S.form.client=this.value">${opts.map(c=>`<option value="${c.id}" ${S.form.client===c.id?'selected':''}>${esc(c.name)} – ${esc(c.flat)}</option>`).join('')}</select>`;
+}
+function chips(key,list,cls=''){
+  return `<div class="chips ${cls}">${list.map(v=>`<button type="button" class="${S.form[key]===v?'on':''}" onclick="S.form.${key}='${v}';this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on'));this.classList.add('on')">${v}</button>`).join('')}</div>`;
+}
+function vSheet(){
+  const t=S.sheet.type; let title='',body='';
+  if(t==='note'){title='📝 New care note';body=`${clientSelect()}
+    <label>Type</label>${chips('cat',CATS)}
+    <label>Mood</label>${chips('mood',MOODS,'moods')}
+    <label>What happened?</label><textarea id="f-text" placeholder="Write facts: what you saw, what they did, what you did."></textarea>
+    <div class="hint">Time and your name are added for you.</div>
+    <label class="check"><input type="checkbox" onchange="S.form.family=this.checked"> Share with family</label>
+    <button class="btn full" style="margin-top:16px" onclick="saveNote()">Save note</button>`}
+  if(t==='incident'){title='⚠️ Log incident (ABC)';body=`${clientSelect()}
+    <label>A – Before (what happened just before?)</label><textarea id="f-a" placeholder="Place, people, noise, changes…"></textarea>
+    <label>B – Behaviour (what did they do?)</label><textarea id="f-b" placeholder="Describe exactly. How long did it last?"></textarea>
+    <label>C – After (what did staff do? how did it end?)</label><textarea id="f-c" placeholder="Support given, how they calmed…"></textarea>
+    <label>Level</label>${chips('level',LEVELS)}
+    <div class="hint">The manager will be asked to review this.</div>
+    <button class="btn red full" style="margin-top:16px" onclick="saveIncident()">Save incident</button>`}
+  if(t==='handover'){title='🔄 Handover';body=`${clientSelect()}
+    <label>Shift</label>${chips('shift',['Day → Evening','Evening → Night','Night → Day'])}
+    <label>Key information for next shift</label><textarea id="f-text" placeholder="Health, mood, meds, appointments, shopping, jobs to do…"></textarea>
+    <button class="btn full" style="margin-top:16px" onclick="saveHandover()">Save handover</button>`}
+  if(t==='review'){const i=DB.incidents.find(x=>x.id===S.sheet.ref);title='✓ Review incident';body=`
+    <div class="card small"><b>${esc(C(i.client).name)}</b> · ${i.level}<br>${esc(i.b)}</div>
+    <label>Action / learning (optional)</label><textarea id="f-text" placeholder="e.g. Update care plan, talk to family, extra training…"></textarea>
+    <button class="btn full" style="margin-top:16px" onclick="saveReview()">Mark as reviewed</button>`}
+  return `<div class="sheet-bg" onclick="if(event.target===this)closeSheet()"><div class="sheet">
+    <div class="sheet-head"><h1 style="font-size:20px">${title}</h1><button class="x" onclick="closeSheet()">✕</button></div>${body}</div></div>`;
+}
+const val=id=>(document.getElementById(id)?.value||'').trim();
+function saveNote(){
+  const text=val('f-text'); if(!text)return toast('Please write what happened');
+  DB.notes.push({id:uid(),client:S.form.client,staff:S.user.name,cat:S.form.cat,mood:S.form.mood,text,family:S.form.family,time:Date.now()});
+  save();S.sheet=null;render();toast('Care note saved ✓');
+}
+function saveIncident(){
+  const a=val('f-a'),b=val('f-b'),c=val('f-c'); if(!a||!b||!c)return toast('Please fill A, B and C');
+  DB.incidents.push({id:uid(),client:S.form.client,staff:S.user.name,time:Date.now(),level:S.form.level,a,b,c,reviewed:false});
+  save();S.sheet=null;render();toast('Incident saved – manager told ✓');
+}
+function saveHandover(){
+  const text=val('f-text'); if(!text)return toast('Please write the handover');
+  DB.handovers.push({id:uid(),client:S.form.client,staff:S.user.name,time:Date.now(),shift:S.form.shift,text});
+  save();S.sheet=null;render();toast('Handover saved ✓');
+}
+function saveReview(){
+  const i=DB.incidents.find(x=>x.id===S.sheet.ref);
+  Object.assign(i,{reviewed:true,reviewer:S.user.name,reviewNote:val('f-text')});
+  save();S.sheet=null;render();toast('Incident reviewed ✓');
+}
+
+/* ---------- navigation ---------- */
+const NAVS={
+ staff:[['home','🏠','My shift'],['clients','👥','People'],['+','＋','Add note'],['rota','📅','Rota'],['more','☰','More']],
+ manager:[['home','📋','Now'],['clients','👥','People'],['incidents','⚠️','Incidents'],['rota','📅','Rota'],['more','☰','More']],
+ director:[['home','📊','Overview'],['clients','👥','People'],['rota','📅','Rota'],['more','☰','More']],
+ family:[['home','👪','Updates'],['more','☰','More']]};
+function navTap(v){if(v==='+')return openSheet('note');go(v,v==='clients'?{unit:S.user.unit||'all'}:v==='rota'?{day:0,shift:currentShift()}:{})}
+function login(k){S.user=USERS[k];S.unit=S.user.unit||'all';go('home')}
+function logout(){S.user=null;go('home')}
+function resetDemo(){DB=seed();save();toast('Demo data reset');render()}
+
+function render(){
+  if(!S.user){app.innerHTML=vLogin();return}
+  const r=S.user.role; let v='';
+  if(S.view==='home')v=r==='staff'?vStaffHome():r==='manager'?vManagerHome():r==='director'?vDirector():vFamily();
+  else if(S.view==='clients')v=vClients();
+  else if(S.view==='client')v=vClient();
+  else if(S.view==='rota')v=vRota();
+  else if(S.view==='incidents')v=vIncidents();
+  else if(S.view==='more')v=vMore();
+  const nav=NAVS[r].map(([k,ic,l])=>`<button class="${k==='+'?'plus':''} ${S.view===k||(k==='clients'&&S.view==='client')?'on':''}" onclick="navTap('${k}')"><span class="ic">${ic}</span>${l}</button>`).join('');
+  app.innerHTML=`<div class="demo-bar">Demo only – all names and records are made up.</div>
+    <div class="top"><div class="brand"><div class="brand-mark">U</div>Ucare</div>
+    <button class="who" onclick="go('more')">${S.user.ic} ${esc(S.user.title)}</button></div>
+    ${v}<nav class="nav"><div class="nav-in">${nav}</div></nav>${S.sheet?vSheet():''}`;
+}
+function renderKeep(input){const pos=input.selectionStart;render();const i=document.querySelector('input[placeholder="🔍 Search name"]');if(i){i.focus();i.setSelectionRange(pos,pos)}}
+render();
+</script>
+</body>
+</html>
